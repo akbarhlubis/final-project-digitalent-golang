@@ -8,6 +8,6 @@ func main() {
 }
 
 func Calculate(x int) (result int) {
-	result = x + 2
+	result += x
 	return result
 }
