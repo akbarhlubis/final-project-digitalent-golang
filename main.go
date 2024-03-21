@@ -7,7 +7,7 @@ import (
 
 func main() {
 	r := router.SetupRouter()
-	// Menjalankan server pada port 8080
 	port := config.AppPort
+	config.DBInit()
 	r.Run(":" + port)
 }

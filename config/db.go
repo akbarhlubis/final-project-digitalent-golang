@@ -13,7 +13,6 @@ func DBInit() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-
-	db.AutoMigrate()
+	fmt.Println("Connected to DB" + DBName)
 	return db
 }
