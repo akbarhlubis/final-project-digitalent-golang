@@ -1,13 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"final-project-akbar/config"
+	"final-project-akbar/router"
+)
 
 func main() {
-	fmt.Println("Hello, Worlds!")
-	fmt.Println(Calculate(4))
-}
-
-func Calculate(x int) (result int) {
-	result += x
-	return result
+	r := router.SetupRouter()
+	// Menjalankan server pada port 8080
+	port := config.AppPort
+	r.Run(":" + port)
 }
