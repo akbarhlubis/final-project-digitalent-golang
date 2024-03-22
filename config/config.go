@@ -35,7 +35,7 @@ func init() {
 
 	DBUsername = os.Getenv("DB_USERNAME")
 	DBPassword = os.Getenv("DB_PASSWORD")
-	DBName = os.Getenv("DB_NAME")
+	DBName = os.Getenv("DB_DATABASE")
 	DBHost = os.Getenv("DB_HOST")
 	DBPort = os.Getenv("DB_PORT")
 }

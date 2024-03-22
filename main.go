@@ -9,5 +9,6 @@ func main() {
 	r := router.SetupRouter()
 	port := config.AppPort
 	config.DBInit()
+	config.SyncDB()
 	r.Run(":" + port)
 }

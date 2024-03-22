@@ -7,10 +7,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Name     string  `json:"name"`
-	Username *string `json:"username"` // *string berarti nullable
-	Password string  `json:"password"`
-	Email    string  `json:"email"`
+	Name     string   `json:"name"`
+	Username *string  `json:"username"`                                           // *string berarti nullable
+	Password string   `json:"password" form:"password" validate:"required,min=6"` // form:"password" berarti ketika melakukan binding dari form, maka field ini akan di bind dengan field password
+	Email    string   `json:"email"`
+	Recipes  []Recipe `json:"recipes"`
 }
 
 func (user *User) HashPassword(password string) error {
