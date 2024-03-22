@@ -1,6 +1,5 @@
 # Final Project Digitalent Golang
-- Projek Blog
-- Projek Event
+- Projek Blog Resep
 # Requirement
 - Menggunakan Framework Gorilla/Gin 
 - Database ( sqlc , database/sql, gorm, sqlx )
@@ -16,7 +15,7 @@
 - Recipe, 
 - Category, 
 - Article, 
-- Tag
+- Bookmark
 ## Feature to have:
 - Authentication & Authorization
 - Crud for each table

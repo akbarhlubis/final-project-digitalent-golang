@@ -27,13 +27,37 @@ func SetupRouter() *gin.Engine {
 		// Auth route
 		api.POST("/login", controller.Login)
 		api.POST("/register", controller.Register)
+		api.POST("/logout", controller.Logout)
 
 		// User route
-		api.POST("/users", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "Get all users",
-			})
-		})
+		api.GET("/users", controller.GetUsers)
+		user := api.Group("/user")
+		{
+			user.GET("/:id", controller.GetUserById)
+			user.DELETE("/:id", controller.DeleteUserById)
+			user.PUT("/:id", controller.UpdateUserById)
+		}
+
+		// Recipe route
+		api.GET("/recipes", controller.GetRecipes)
+		recipe := api.Group("/recipe")
+		{
+			recipe.GET("/:id", controller.GetRecipeById)
+			recipe.DELETE("/:id", controller.DeleteRecipeById)
+			recipe.PUT("/:id", controller.UpdateRecipeById)
+			recipe.POST("/", controller.CreateRecipe)
+		}
+
+		// Category route
+		api.GET("/categories", controller.GetCategories)
+		category := api.Group("/category")
+		{
+			category.GET("/:id", controller.GetCategoryById)
+			category.DELETE("/:id", controller.DeleteCategoryById)
+			category.PUT("/:id", controller.UpdateCategoryById)
+			category.POST("/", controller.CreateCategory)
+			category.GET("/:id/recipes", controller.GetCategoryRecipes)
+		}
 	}
 
 	return router

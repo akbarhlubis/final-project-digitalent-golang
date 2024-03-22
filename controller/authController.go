@@ -15,3 +15,10 @@ func Register(c *gin.Context) {
 		"message": "Register success",
 	})
 }
+
+func Logout(c *gin.Context) {
+	// send request to success logout
+	c.JSON(200, gin.H{
+		"message": "Logout success",
+	})
+}

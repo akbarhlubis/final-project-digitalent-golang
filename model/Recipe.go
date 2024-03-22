@@ -12,4 +12,5 @@ type Recipe struct {
 	User        User     `json:"user"`
 	CategoryID  uint     `json:"category_id"`
 	Category    Category `json:"category"`
+	Bookmarks   []Bookmark
 }
