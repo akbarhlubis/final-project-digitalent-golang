@@ -20,3 +20,15 @@
 - Authentication & Authorization
 - Crud for each table
 - Password di hashing
+
+## Flow Aplikasi
+- Register Akun
+- Login Akun
+- Sebagai Admin
+  - Mengelola CRUD Recipe
+  - Mengelola CRUD Artikel
+  - Mengelola CRUD User
+  - Mengelola CRUD Category
+- Sebagai User
+  - CRUD Recipe milik sendiri
+  - CRUD Artikel milik sendiri

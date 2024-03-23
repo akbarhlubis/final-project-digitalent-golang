@@ -58,6 +58,17 @@ func SetupRouter() *gin.Engine {
 			category.POST("/", controller.CreateCategory)
 			category.GET("/:id/recipes", controller.GetCategoryRecipes)
 		}
+
+		// Article route
+		api.GET("/articles", controller.GetArticles)
+		article := api.Group("/article")
+		{
+			article.GET("/:id", controller.GetArticleById)
+			article.DELETE("/:id", controller.DeleteArticleById)
+			article.PUT("/:id", controller.UpdateArticleById)
+			article.POST("/", controller.CreateArticle)
+			article.GET("/categories", controller.GetArticleCategories)
+		}
 	}
 
 	return router

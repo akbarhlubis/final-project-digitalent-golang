@@ -3,10 +3,11 @@ package controller
 import "github.com/gin-gonic/gin"
 
 func GetRecipes(c *gin.Context) {
-	// send request to get all recipes
+	// Get All Recipes from database
 	c.JSON(200, gin.H{
 		"message": "Get all recipes",
 	})
+
 }
 
 func GetRecipeById(c *gin.Context) {
