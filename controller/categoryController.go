@@ -17,9 +17,14 @@ func GetCategories(c *gin.Context) {
 }
 
 func GetCategoryById(c *gin.Context) {
-	// send request to get category by id
-	c.JSON(200, gin.H{
-		"message": "Get category by id",
+	var category model.Category
+
+	id := c.Param("id")
+
+	config.DBInit().Where("id = ?", id).Find(&category)
+
+	c.JSON(http.StatusOK, gin.H{
+		"category": category,
 	})
 }
 
@@ -31,16 +36,32 @@ func UpdateCategoryById(c *gin.Context) {
 }
 
 func DeleteCategoryById(c *gin.Context) {
-	// send request to delete category by id
-	c.JSON(200, gin.H{
-		"message": "Delete category by id",
+	var category model.Category
+
+	id := c.Param("id")
+
+	config.DBInit().Where("id = ?", id).Delete(&category)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Category has been deleted",
 	})
 }
 
 func CreateCategory(c *gin.Context) {
-	// send request to create category
-	c.JSON(200, gin.H{
-		"message": "Create category",
+	var category model.Category
+
+	if err := c.ShouldBindJSON(&category); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	config.DBInit().Create(&category)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Category has been created",
+		"data":    category,
 	})
 }
 

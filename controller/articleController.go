@@ -1,18 +1,33 @@
 package controller
 
-import "github.com/gin-gonic/gin"
+import (
+	"final-project-akbar/config"
+	"final-project-akbar/model"
+
+	"github.com/gin-gonic/gin"
+)
 
 func GetArticles(c *gin.Context) {
-	// send request to get all articles
+	var articles []model.Article
+
+	config.DBInit().Find(&articles)
+
 	c.JSON(200, gin.H{
-		"message": "Get all articles",
+		"message": "Get articles",
+		"data":    articles,
 	})
 }
 
 func GetArticleById(c *gin.Context) {
-	// send request to get article by id
+	var article model.Article
+
+	id := c.Param("id")
+
+	config.DBInit().Where("id = ?", id).Find(&article)
+
 	c.JSON(200, gin.H{
 		"message": "Get article by id",
+		"data":    article,
 	})
 }
 
@@ -31,9 +46,19 @@ func DeleteArticleById(c *gin.Context) {
 }
 
 func CreateArticle(c *gin.Context) {
+	var article model.Article
+
+	if err := c.ShouldBindJSON(&article); err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
 	// send request to create article
 	c.JSON(200, gin.H{
 		"message": "Create article",
+		"data":    article,
 	})
 }
 
