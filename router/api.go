@@ -2,6 +2,7 @@ package router
 
 import (
 	"final-project-akbar/controller"
+	"final-project-akbar/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -67,7 +68,7 @@ func SetupRouter() *gin.Engine {
 			article.GET("/:id", controller.GetArticleById)
 			article.DELETE("/:id", controller.DeleteArticleById)
 			article.PUT("/:id", controller.UpdateArticleById)
-			article.POST("/", controller.CreateArticle)
+			article.POST("/", middleware.Authentication(), controller.CreateArticle)
 			article.GET("/categories", controller.GetArticleCategories)
 		}
 

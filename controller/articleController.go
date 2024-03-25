@@ -2,9 +2,12 @@ package controller
 
 import (
 	"final-project-akbar/config"
+	"final-project-akbar/helpers"
 	"final-project-akbar/model"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func GetArticles(c *gin.Context) {
@@ -46,20 +49,33 @@ func DeleteArticleById(c *gin.Context) {
 }
 
 func CreateArticle(c *gin.Context) {
-	var article model.Article
+	db := config.DBInit()
+	userData := c.MustGet("user").(jwt.MapClaims)
+	contentType := helpers.GetContentType(c)
 
-	if err := c.ShouldBindJSON(&article); err != nil {
+	article := model.Article{}
+	userID := int(userData["id"].(float64))
+
+	if contentType != "application/json" {
+		c.ShouldBindJSON(&article)
+	} else {
+		c.ShouldBind(&article)
+
+	}
+
+	article.UserID = uint(userID)
+
+	err := db.Debug().Create(&article).Error
+
+	if err != nil {
 		c.JSON(400, gin.H{
-			"error": err.Error(),
+			"error":   "Failed to create article",
+			"message": err.Error(),
 		})
 		return
 	}
 
-	// send request to create article
-	c.JSON(200, gin.H{
-		"message": "Create article",
-		"data":    article,
-	})
+	c.JSON(http.StatusCreated, article)
 }
 
 func GetArticleCategories(c *gin.Context) {
