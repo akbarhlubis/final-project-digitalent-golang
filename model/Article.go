@@ -1,9 +1,8 @@
 package model
 
-import "gorm.io/gorm"
-
 type Article struct {
-	gorm.Model
+	// gorm.Model
+	ID        uint   `json:"id" gorm:"primaryKey"`
 	Title     string `json:"title"`
 	Content   string `json:"content"`
 	Author    string `json:"author"`

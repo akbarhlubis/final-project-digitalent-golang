@@ -1,9 +1,8 @@
 package model
 
-import "gorm.io/gorm"
-
 type Recipe struct {
-	gorm.Model
+	// gorm.Model
+	ID          uint     `json:"id" gorm:"primaryKey"`
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
 	Ingredients string   `json:"ingredients"`

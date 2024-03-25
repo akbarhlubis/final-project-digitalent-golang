@@ -1,11 +1,18 @@
 package controller
 
-import "github.com/gin-gonic/gin"
+import (
+	"final-project-akbar/config"
+	"final-project-akbar/model"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 func GetCategories(c *gin.Context) {
-	// send request to get all categories
-	c.JSON(200, gin.H{
-		"message": "Get all categories",
+	var categories []model.Category
+	config.DBInit().Find(&categories)
+	c.JSON(http.StatusOK, gin.H{
+		"categories": categories,
 	})
 }
 

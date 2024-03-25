@@ -36,6 +36,7 @@ func SetupRouter() *gin.Engine {
 			user.GET("/:id", controller.GetUserById)
 			user.DELETE("/:id", controller.DeleteUserById)
 			user.PUT("/:id", controller.UpdateUserById)
+			user.POST("/", controller.CreateUser)
 		}
 
 		// Recipe route
@@ -68,6 +69,15 @@ func SetupRouter() *gin.Engine {
 			article.PUT("/:id", controller.UpdateArticleById)
 			article.POST("/", controller.CreateArticle)
 			article.GET("/categories", controller.GetArticleCategories)
+		}
+
+		// Bookmark route
+		bookmark := api.Group("/bookmark")
+		{
+			bookmark.GET("/:id", controller.GetBookmarkById)
+			bookmark.DELETE("/:id", controller.DeleteBookmarkById)
+			bookmark.PUT("/:id", controller.UpdateBookmarkById)
+			bookmark.POST("/", controller.CreateBookmark)
 		}
 	}
 

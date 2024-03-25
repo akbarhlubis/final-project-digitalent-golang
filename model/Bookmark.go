@@ -1,9 +1,8 @@
 package model
 
-import "gorm.io/gorm"
-
 type Bookmark struct {
-	gorm.Model
+	// gorm.Model
+	ID        uint    `json:"id" gorm:"primaryKey"`
 	UserID    uint    `json:"user_id"`
 	ArticleID uint    `json:"article_id"`
 	RecipeID  uint    `json:"recipe_id"`

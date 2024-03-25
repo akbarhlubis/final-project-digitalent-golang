@@ -7,6 +7,7 @@ import (
 
 func SyncDB() {
 	db := DBInit()
-	db.AutoMigrate(&model.User{}, &model.Recipe{}, &model.Category{}, &model.Bookmark{}, &model.Article{})
+	db.Debug().AutoMigrate(&model.User{}, &model.Recipe{}, &model.Category{}, &model.Bookmark{}, &model.Article{})
+	// db.Debug().AutoMigrate(&model.User{})
 	fmt.Println("Database Migrated...")
 }

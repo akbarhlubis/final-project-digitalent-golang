@@ -18,3 +18,7 @@ func DBInit() *gorm.DB {
 	// fmt.Println(dsn)
 	return db
 }
+
+func GetDB() *gorm.DB {
+	return DBInit()
+}
