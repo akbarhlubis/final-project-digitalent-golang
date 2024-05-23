@@ -3,6 +3,7 @@ package helpers
 import (
 	"errors"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -10,16 +11,20 @@ import (
 
 var secretKey = "secret"
 
-func GenerateToken(id uint, email string) string {
+func GenerateToken(id uint, email string) (string, error) {
 	claims := jwt.MapClaims{
 		"id":    id,
 		"email": email,
+		"exp":   time.Now().Add(time.Hour * 72).Unix(), // Token expires after 72 hours
 	}
 
 	parseToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, _ := parseToken.SignedString([]byte(secretKey))
+	token, err := parseToken.SignedString([]byte(secretKey))
+	if err != nil {
+		return "", err
+	}
 
-	return token
+	return token, nil
 }
 
 func VerifyToken(c *gin.Context) (interface{}, error) {
@@ -33,18 +38,16 @@ func VerifyToken(c *gin.Context) (interface{}, error) {
 
 	stringToken := strings.Split(headerToken, " ")[1]
 
-	token, _ := jwt.Parse(stringToken, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(stringToken, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errResponse
 		}
 		return []byte(secretKey), nil
 	})
 
-	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		return token.Claims, nil
-	} else {
+	if err != nil || !token.Valid {
 		return nil, errResponse
 	}
 
-	return token.Claims.(jwt.MapClaims), nil
+	return token.Claims, nil
 }

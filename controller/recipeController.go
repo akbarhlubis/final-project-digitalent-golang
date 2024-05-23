@@ -9,18 +9,42 @@ import (
 )
 
 func GetRecipes(c *gin.Context) {
-	var recipes []model.Recipe
-	config.DBInit().Find(&recipes)
+	var recipes []model.Recipe     // create a slice of recipe
+	config.DBInit().Find(&recipes) // find all recipes
+
+	if len(recipes) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "No recipes found",
+		})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"recipes": recipes,
+		"message": "Get all recipes",
+		"data":    recipes, // return all recipes
 	})
 
 }
 
 func GetRecipeById(c *gin.Context) {
 	// send request to get recipe by id
-	c.JSON(200, gin.H{
+	var recipe model.Recipe
+	// get the id from the url
+	id := c.Param("id")
+	// find the recipe by id in the database
+	config.DBInit().Where("id = ?", id).Find(&recipe)
+
+	// if the recipe is not found
+	if recipe.Name == "" {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Recipe not found",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Get recipe by id",
+		"data":    recipe,
 	})
 }
 
@@ -29,22 +53,23 @@ func UpdateRecipeById(c *gin.Context) {
 
 	id := c.Param("id")
 
+	if err := config.DBInit().Where("id = ?", id).First(&recipe).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{
+			"message": "Recipe not found",
+		})
+		return
+
+	}
+
 	if err := c.ShouldBindJSON(&recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
+
 	}
 
-	name := c.PostForm("name")
-	description := c.PostForm("description")
-	steps := c.PostForm("steps")
-
-	recipe.Name = name
-	recipe.Description = description
-	recipe.Steps = steps
-
-	config.DBInit().Where("id = ?", id).Updates(&recipe)
+	config.DBInit().Save(&recipe)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Recipe has been updated",
@@ -65,8 +90,9 @@ func DeleteRecipeById(c *gin.Context) {
 }
 
 func CreateRecipe(c *gin.Context) {
-	var recipe model.Recipe
+	var recipe model.Recipe // declare a recipe struct
 
+	// condition if the request is not a json
 	if err := c.ShouldBindJSON(&recipe); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -74,16 +100,15 @@ func CreateRecipe(c *gin.Context) {
 		return
 	}
 
-	name := c.PostForm("name")
-	description := c.PostForm("description")
-	steps := c.PostForm("steps")
+	// create the recipe
+	if err := config.DBInit().Create(&recipe).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
-	recipe.Name = name
-	recipe.Description = description
-	recipe.Steps = steps
-
-	config.DBInit().Create(&recipe)
-
+	// return the response
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Recipe has been created",
 		"data":    recipe,

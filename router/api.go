@@ -13,23 +13,24 @@ func SetupRouter() *gin.Engine {
 	// Testing route - Single route
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"message": "Wasap gaesss, pake GET Request!",
+			"message": "Berhasil, pake GET Request!",
 		})
 	})
 	router.POST("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "Wasap gaesss, pake POST Request!",
-		})
+
 	})
 
-	// API route - Grouping route
-	api := router.Group("/api")
+	// Auth route - Grouping route
+	auth := router.Group("/auth")
 	{
-		// Auth route
-		api.POST("/login", controller.Login)
-		api.POST("/register", controller.Register)
-		api.POST("/logout", controller.Logout)
+		auth.POST("/login", controller.Login)
+		auth.POST("/register", controller.Register)
+		auth.POST("/logout", controller.Logout)
+	}
 
+	// API route - Grouping route
+	api := router.Group("/api", middleware.Authentication())
+	{
 		// User route
 		api.GET("/users", controller.GetUsers)
 		user := api.Group("/user")
@@ -54,10 +55,11 @@ func SetupRouter() *gin.Engine {
 		api.GET("/categories", controller.GetCategories)
 		category := api.Group("/category")
 		{
+			// category.POST("/", middleware.Authentication(), controller.CreateCategory)
+			category.POST("/", controller.CreateCategory)
 			category.GET("/:id", controller.GetCategoryById)
 			category.DELETE("/:id", controller.DeleteCategoryById)
 			category.PUT("/:id", controller.UpdateCategoryById)
-			category.POST("/", controller.CreateCategory)
 			category.GET("/:id/recipes", controller.GetCategoryRecipes)
 		}
 
@@ -68,7 +70,8 @@ func SetupRouter() *gin.Engine {
 			article.GET("/:id", controller.GetArticleById)
 			article.DELETE("/:id", controller.DeleteArticleById)
 			article.PUT("/:id", controller.UpdateArticleById)
-			article.POST("/", middleware.Authentication(), controller.CreateArticle)
+			// article.POST("/", middleware.Authentication(), controller.CreateArticle)
+			article.POST("/", controller.CreateArticle)
 			article.GET("/categories", controller.GetArticleCategories)
 		}
 

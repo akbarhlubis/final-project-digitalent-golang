@@ -4,7 +4,6 @@ import (
 	"final-project-akbar/config"
 	"final-project-akbar/helpers"
 	"final-project-akbar/model"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -30,9 +29,6 @@ func Login(c *gin.Context) {
 	password = User.Password
 
 	err := db.Debug().Where("email = ?", User.Email).Take(&User).Error
-
-	// get user by email and show in the log
-	fmt.Println(User)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error":   "Unathorized",
@@ -42,7 +38,15 @@ func Login(c *gin.Context) {
 	}
 
 	User.CheckPassword(password)
-	token := helpers.GenerateToken(User.ID, User.Email)
+	token, err := helpers.GenerateToken(User.ID, User.Email)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "Unathorized",
+			"message": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"token": token,
@@ -59,6 +63,13 @@ func Register(c *gin.Context) {
 		c.ShouldBindJSON(&User)
 	} else {
 		c.ShouldBind(&User)
+	}
+
+	if err := User.HashPassword(User.Password); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
 	err := db.Debug().Create(&User).Error
@@ -79,8 +90,18 @@ func Register(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	// send request to success logout
-	c.JSON(200, gin.H{
+	verifyToken, err := helpers.VerifyToken(c)
+	_ = verifyToken
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":   "Unauthorized",
+			"message": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Logout success",
 	})
 }
