@@ -10,6 +10,9 @@ import (
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
 
+	// Setting Middleware CORS
+	router.Use(middleware.CORSConfig())
+
 	// Testing route - Single route
 	router.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
