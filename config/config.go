@@ -20,6 +20,12 @@ var (
 	DBName     string
 	DBHost     string
 	DBPort     string
+
+	// Frontend
+	FrontendURL  string
+	FrontendHost string
+	FrontendPort string
+	FrontendFull string
 )
 
 func init() {
@@ -38,4 +44,9 @@ func init() {
 	DBName = os.Getenv("DB_DATABASE")
 	DBHost = os.Getenv("DB_HOST")
 	DBPort = os.Getenv("DB_PORT")
+
+	FrontendURL = os.Getenv("FRONTEND_URL")
+	FrontendHost = os.Getenv("FRONTEND_HOST")
+	FrontendPort = os.Getenv("FRONTEN_PORT")
+	FrontendFull = os.Getenv("FRONTEND_FULL_HOST_PORT")
 }
